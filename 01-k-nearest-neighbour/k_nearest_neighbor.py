@@ -101,7 +101,7 @@ class KNearestNeighbor:
             #######################################################################
             # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-            dists[i, :] = np.sqrt(np.sum(() ** 2))
+            dists[i, :] = np.sqrt(np.sum((X[i, :] - self.X_train) ** 2, axis=1))
 
             # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         return dists
@@ -130,6 +130,8 @@ class KNearestNeighbor:
         #       and two broadcast sums.                                         #
         #########################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+
+        dists = np.sqrt(np.sum(X ** 2, axis=1) - 2 * np.dot(X, self.X_train) + np.sum(self.X_train ** 2, axis=1))
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         return dists
@@ -161,6 +163,11 @@ class KNearestNeighbor:
             #########################################################################
             # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+            closest_y = []
+            k_nearest_neighbours_ind = np.argsort(dists[i])
+            for j in range(k):
+                closest_y.append(self.y_train[k_nearest_neighbours_ind[j]])
+
             # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
             #########################################################################
             # TODO:                                                                 #
@@ -171,6 +178,7 @@ class KNearestNeighbor:
             #########################################################################
             # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
+            y_pred[i] = np.bincount(closest_y).argmax()
 
             # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
