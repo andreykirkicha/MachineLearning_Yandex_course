@@ -1,6 +1,5 @@
 import numpy as np
 
-
 class LossAndDerivatives:
     @staticmethod
     def mse(X, Y, w):
@@ -16,7 +15,7 @@ class LossAndDerivatives:
         Comment: If Y is two-dimentional, average the error over both dimentions.
         """
 
-        return np.mean((X.dot(w) - Y)**2)
+        return np.mean((X.dot(w) - Y) ** 2)
 
     @staticmethod
     def mae(X, Y, w):
@@ -31,9 +30,8 @@ class LossAndDerivatives:
 
         Comment: If Y is two-dimentional, average the error over both dimentions.
         """
-
-        # YOUR CODE HERE    
-        return 
+    
+        return np.mean(np.abs(X.dot(w) - Y))
 
     @staticmethod
     def l2_reg(w):
@@ -46,8 +44,7 @@ class LossAndDerivatives:
         Computes the L2 regularization term for the weight matrix w.
         """
         
-        # YOUR CODE HERE
-        return 
+        return np.sum(w ** 2)
 
     @staticmethod
     def l1_reg(w):
@@ -60,8 +57,7 @@ class LossAndDerivatives:
         Computes the L1 regularization term for the weight matrix w.
         """
 
-        # YOUR CODE HERE
-        return 
+        return np.sum(np.abs(w))
 
     @staticmethod
     def no_reg(w):
@@ -86,8 +82,17 @@ class LossAndDerivatives:
         dimension as well, so you need to consider that fact in derivative implementation.
         """
 
-        # YOUR CODE HERE
-        return 
+        n_observations = X.shape[0]
+        target_dimentionality = Y.shape[1] if (len(Y.shape) > 1) else 1
+
+        predictions = np.dot(X, w)
+        error_for_derivative = Y - predictions
+
+        # Average the error
+        if (target_dimentionality > 1) : error_for_derivative = error_for_derivative.mean(axis=1)
+
+        # Calculate gradient
+        return 2 * np.dot(X.T, error_for_derivative) / n_observations
 
     @staticmethod
     def mae_derivative(X, Y, w):
@@ -105,8 +110,18 @@ class LossAndDerivatives:
         dimension as well, so you need to consider that fact in derivative implementation.
         """
 
-        # YOUR CODE HERE
-        return 
+        n_observations = X.shape[0]
+        target_dimentionality = Y.shape[1] if (len(Y.shape) > 1) else 1
+
+        predictions = np.dot(X, w)
+        error = Y - predictions
+        error_sign = np.sign(Y - predictions)
+
+        # Average the error
+        if (target_dimentionality > 1) : error = error.mean(axis=1, keepdims=True)
+
+        # Calculate gradient
+        return np.dot(X.T, error_sign) / n_observations
 
     @staticmethod
     def l2_reg_derivative(w):
@@ -118,8 +133,10 @@ class LossAndDerivatives:
         Computes the L2 regularization term derivative w.r.t. the weight matrix w.
         """
 
-        # YOUR CODE HERE
-        return 
+        regularization_lambda = 1 / 1000
+
+        # Calculate gradient
+        return 2 * regularization_lambda * w
 
     @staticmethod
     def l1_reg_derivative(w):
@@ -132,8 +149,10 @@ class LossAndDerivatives:
         Computes the L1 regularization term derivative w.r.t. the weight matrix w.
         """
 
-        # YOUR CODE HERE
-        return 
+        regularization_lambda = 1 / 1000
+
+        # Calculate gradient
+        return regularization_lambda * np.sign(w)
 
     @staticmethod
     def no_reg_derivative(w):
