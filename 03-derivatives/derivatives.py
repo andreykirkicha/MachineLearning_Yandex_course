@@ -86,13 +86,19 @@ class LossAndDerivatives:
         target_dimentionality = Y.shape[1] if (len(Y.shape) > 1) else 1
 
         predictions = np.dot(X, w)
-        error_for_derivative = Y - predictions
+        error_for_derivative = predictions - Y
 
-        # Average the error
-        if (target_dimentionality > 1) : error_for_derivative = error_for_derivative.mean(axis=1)
+        if (len(Y.shape) == 1):
+            Y = Y[:, np.newaxis]
+
+        if (len(X.shape) == 1):
+            X = X[:, np.newaxis]
+
+        if (len(w.shape) == 1):
+            w = w[:, np.newaxis]
 
         # Calculate gradient
-        return 2 * np.dot(X.T, error_for_derivative) / n_observations
+        return 2 * np.dot(X.T, error_for_derivative) / (Y.shape[0] * Y.shape[1])
 
     @staticmethod
     def mae_derivative(X, Y, w):
@@ -115,13 +121,19 @@ class LossAndDerivatives:
 
         predictions = np.dot(X, w)
         error = Y - predictions
-        error_sign = np.sign(Y - predictions)
+        error_sign = np.sign(predictions - Y)
 
-        # Average the error
-        if (target_dimentionality > 1) : error = error.mean(axis=1, keepdims=True)
+        if (len(Y.shape) == 1):
+            Y = Y[:, np.newaxis]
+
+        if (len(X.shape) == 1):
+            X = X[:, np.newaxis]
+
+        if (len(w.shape) == 1):
+            w = w[:, np.newaxis]
 
         # Calculate gradient
-        return np.dot(X.T, error_sign) / n_observations
+        return np.dot(X.T, error_sign) / (Y.shape[0] * Y.shape[1])
 
     @staticmethod
     def l2_reg_derivative(w):
@@ -133,7 +145,7 @@ class LossAndDerivatives:
         Computes the L2 regularization term derivative w.r.t. the weight matrix w.
         """
 
-        regularization_lambda = 1 / 1000
+        regularization_lambda = 1
 
         # Calculate gradient
         return 2 * regularization_lambda * w
@@ -149,7 +161,7 @@ class LossAndDerivatives:
         Computes the L1 regularization term derivative w.r.t. the weight matrix w.
         """
 
-        regularization_lambda = 1 / 1000
+        regularization_lambda = 1
 
         # Calculate gradient
         return regularization_lambda * np.sign(w)
@@ -160,4 +172,3 @@ class LossAndDerivatives:
         Simply ignores the derivative
         """
         return np.zeros_like(w)
-
