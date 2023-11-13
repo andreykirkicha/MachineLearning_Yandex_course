@@ -82,9 +82,6 @@ class LossAndDerivatives:
         dimension as well, so you need to consider that fact in derivative implementation.
         """
 
-        n_observations = X.shape[0]
-        target_dimentionality = Y.shape[1] if (len(Y.shape) > 1) else 1
-
         predictions = np.dot(X, w)
         error_for_derivative = predictions - Y
 
@@ -115,10 +112,7 @@ class LossAndDerivatives:
         Please mention, that in case `target_dimentionality` > 1 the error is averaged along this
         dimension as well, so you need to consider that fact in derivative implementation.
         """
-
-        n_observations = X.shape[0]
-        target_dimentionality = Y.shape[1] if (len(Y.shape) > 1) else 1
-
+        
         predictions = np.dot(X, w)
         error = Y - predictions
         error_sign = np.sign(predictions - Y)
